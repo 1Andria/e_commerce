@@ -2,6 +2,7 @@ import { temporaryData } from "@/app/common/Datas/TemporaryData";
 import Image from "next/image";
 import React from "react";
 import { HeadType } from "../SpeakerHead/SpeakerHead";
+import Link from "next/link";
 
 function SpeakersForSaleSection({ category }: HeadType) {
   return (
@@ -33,9 +34,12 @@ function SpeakersForSaleSection({ category }: HeadType) {
                 {el.title}
               </h2>
               <p className="text-black opacity-70">{el.description}</p>
-              <button className="w-[160px] h-[48px] bg-[#D87D4A] text-white font-semibold hover:opacity-80 transition">
+              <Link
+                href={`selectedproducts/${el.id}`}
+                className="w-[160px] flex justify-center items-center h-[48px] bg-[#D87D4A] text-white font-semibold hover:opacity-80 transition"
+              >
                 SEE PRODUCT
-              </button>
+              </Link>
             </div>
           </div>
         ))}

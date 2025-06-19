@@ -1,16 +1,16 @@
-import Image, { StaticImageData } from "next/image";
+"use client";
+import { NavTypes } from "@/app/common/types/types";
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-
-export type NavTypes = {
-  ImageSrc: StaticImageData;
-  category: string;
-};
 
 function NavigateToProducts({ ImageSrc, category }: NavTypes) {
   return (
     <>
-      <div className="w-[350px] h-[304px] relative overflow-hidden bg-gradient-to-t from-[#F1F1F1] to-white flex flex-col items-center pb-[50px] ">
+      <Link
+        href={`/${category.toLocaleLowerCase()}`}
+        className="w-[350px] h-[304px] relative overflow-hidden bg-gradient-to-t from-[#F1F1F1] to-white flex flex-col items-center pb-[50px] "
+      >
         <div className="absolute inset-0 " />
         <div className="relative w-[200px] h-[200px] z-10 ">
           <Image
@@ -24,10 +24,8 @@ function NavigateToProducts({ ImageSrc, category }: NavTypes) {
           {category}
         </h1>
 
-        <Link href={"/"} className="text-[14px] text-[gray]">
-          shop
-        </Link>
-      </div>
+        <h3 className="text-[14px] text-[gray]">shop</h3>
+      </Link>
     </>
   );
 }

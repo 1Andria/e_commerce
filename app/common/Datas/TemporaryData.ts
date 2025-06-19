@@ -14,6 +14,7 @@ import speaker3 from "../../../Data/product-zx9-speaker/desktop/image-gallery-1.
 export const temporaryData = [
   {
     id: "xx99-mk2",
+    isNew: true,
     category: "headphones",
     src: headphone1,
     title: "XX99 Mark II Headphones",
@@ -33,6 +34,8 @@ export const temporaryData = [
   },
   {
     id: "xx99-mk22",
+    isNew: true,
+
     category: "headphones",
     src: headphone4,
     title: "XX99 Mark II Headphones",
@@ -53,6 +56,8 @@ export const temporaryData = [
   {
     id: "yx1-earphones",
     category: "earphones",
+    isNew: true,
+
     src: earphone1,
     title: "YX1 Wireless Earphones",
     description:
@@ -73,6 +78,8 @@ export const temporaryData = [
     id: "yx1-earphones2",
     category: "earphones",
     src: earphone3,
+    isNew: true,
+
     title: "YX1 Wireless Earphones",
     description:
       "The YX1 Wireless Earphones are engineered for people on the go. With premium build quality and compact design, you get amazing audio in a lightweight package.",
@@ -92,6 +99,8 @@ export const temporaryData = [
     id: "zx7-speaker",
     category: "speakers",
     src: speaker,
+    isNew: true,
+
     title: "ZX7 Bluetooth Speaker",
     description:
       "Bring bold sound anywhere with the ZX7 Bluetooth Speaker. Built with durability in mind, it's perfect for both indoor and outdoor use.",
@@ -112,6 +121,8 @@ export const temporaryData = [
     category: "speakers",
     src: speaker2,
     title: "ZX7 Bluetooth Speaker",
+    isNew: true,
+
     description:
       "Bring bold sound anywhere with the ZX7 Bluetooth Speaker. Built with durability in mind, it's perfect for both indoor and outdoor use.",
     features:
