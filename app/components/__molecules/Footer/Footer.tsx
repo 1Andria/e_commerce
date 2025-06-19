@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import CompanyName from "../../../common/images/audiophile.png";
 import Image from "next/image";
@@ -5,11 +6,19 @@ import Navigation from "../../__atoms/Navigation/Navigation";
 import Fb_icon from "../../../common/images/fb_icon.png";
 import Twit_icon from "../../../common/images/twit_icon.png";
 import Insta_icon from "../../../common/images/insta_icon.png";
+import { usePathname } from "next/navigation";
 
 function Footer() {
+  const path = usePathname();
   return (
     <>
-      <div className="w-full bg-black h-[315px] mt-[200px]">
+      <div
+        className={`w-full bg-black h-[315px] mt-[200px] ${
+          path === "/" || path === "/login" || path === "/register"
+            ? "hidden"
+            : ""
+        }`}
+      >
         <div className="max-w-[1110px] w-full h-[100%] mx-auto relative pb-[48px]">
           <div className="w-[101px] h-[5px] bg-[#D87D4A] absolute top-0 left-0"></div>
           <div className="w-full flex justify-between  pt-[70px] ">
