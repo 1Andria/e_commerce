@@ -1,5 +1,6 @@
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
-
-export default function Button({ children, ...props }: ButtonProps) {
+export default function Button({
+  children,
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return <button {...props}>{children}</button>;
 }

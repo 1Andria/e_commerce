@@ -16,7 +16,6 @@ export default function FormField({
   type = "text",
   value,
   onChange,
-  className = "",
 }: FormFieldProps) {
   return (
     <div className="mb-4">
