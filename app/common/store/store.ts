@@ -30,8 +30,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   logout: () => {
     set({ user: null });
   },
-
-
+}));
 
 export const quantityReducer = (state: number, action: { type: string }) => {
   switch (action.type) {
