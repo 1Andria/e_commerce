@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { CartStore } from "../types/types";
+import { CartStore, ShowCartType } from "../types/types";
 interface User {
   email: string;
   password: string;
@@ -64,4 +64,24 @@ export const useCartStore = create<CartStore>((set) => ({
         };
       }
     }),
+  removeAll: () => set({ cart: [] }),
+  incrementQuantity: (id) =>
+    set((state) => ({
+      cart: state.cart.map((item) =>
+        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+      ),
+    })),
+  decrementQuantity: (id) =>
+    set((state) => ({
+      cart: state.cart.map((item) =>
+        item.id === id && item.quantity > 1
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      ),
+    })),
+}));
+
+export const useCartShow = create<ShowCartType>((set) => ({
+  showCart: false,
+  setShowCart: (value) => set(() => ({ showCart: value })),
 }));
