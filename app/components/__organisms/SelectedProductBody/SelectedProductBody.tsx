@@ -8,6 +8,7 @@ import { quantityReducer, useCartStore } from "@/app/common/store/store";
 import AllNavigator from "../../__molecules/AllNavigator/AllNavigator";
 import CommercialCompany from "../../__molecules/CommercialCompany/CommercialCompany";
 import { ProductType } from "@/app/common/types/types";
+import AddToCartBtn from "../../__atoms/AddToCartBtn/AddToCartBtn";
 
 function SelectedProductBody() {
   const path = useParams();
@@ -63,22 +64,9 @@ function SelectedProductBody() {
           </p>
           <h3 className="font-bold text-[18px]">${Product.price}</h3>
 
-          <div className="flex space-x-4 items-center">
-            <div className="w-[120px] h-[48px] bg-[#F1F1F1] px-[15px] flex items-center justify-between">
-              <button
-                onClick={() => dispatch({ type: "DECREMENT" })}
-                className="text-black text-lg font-bold cursor-pointer"
-              >
-                –
-              </button>
-              <span className="font-medium">{quantity}</span>
-              <button
-                onClick={() => dispatch({ type: "INCREMENT" })}
-                className="text-black text-lg font-bold cursor-pointer"
-              >
-                +
-              </button>
-            </div>
+          <div className="flex gap-[20px]">
+            <AddToCartBtn dispatch={dispatch} quantity={quantity} />
+
             <button
               onClick={() => addToCart(Product.id, quantity)}
               className="bg-[#D87D4A] text-white px-6 py-3 uppercase text-sm font-bold tracking-wider hover:bg-[#FBAF85] transition"

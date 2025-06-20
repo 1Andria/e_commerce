@@ -7,9 +7,17 @@ export type CartItem = {
   quantity: number;
 };
 
+export type ShowCartType = {
+  showCart: boolean;
+  setShowCart: (value: boolean) => void;
+};
+
 export type CartStore = {
   cart: CartItem[];
   addToCart: (id: string, quantity: number) => void;
+  removeAll: () => void;
+  incrementQuantity: (id: string) => void;
+  decrementQuantity: (id: string) => void;
 };
 
 export type NavTypes = {
