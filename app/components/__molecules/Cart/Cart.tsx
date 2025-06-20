@@ -5,7 +5,7 @@ import React from "react";
 import { temporaryData } from "@/app/common/Datas/TemporaryData";
 import Image from "next/image";
 import Link from "next/link";
-
+import { useRouter } from "next/navigation";
 type Props = {
   anchorRef: React.RefObject<HTMLImageElement | null>;
 };
@@ -18,6 +18,7 @@ function Cart({ anchorRef }: Props) {
   const incrementQuantity = useCartStore((state) => state.incrementQuantity);
   const decrementQuantity = useCartStore((state) => state.decrementQuantity);
   const cartItems = useCartStore((state) => state.cart);
+  const router = useRouter();
   const totalPrice = cartItems.reduce((acc, { id, quantity }) => {
     const product = temporaryData.find((item) => item.id === id);
     if (!product) return acc;
@@ -57,16 +58,17 @@ function Cart({ anchorRef }: Props) {
 
                 return (
                   <div key={id} className="flex justify-between mt-[12px]">
-                    <div className="flex items-center gap-4">
-                      <Link href={`/selectedproducts/${id}`}>
-                        <Image
-                          src={product.src}
-                          alt={product.title}
-                          width={64}
-                          height={64}
-                          className="rounded-[12px]"
-                        />
-                      </Link>
+                    <Link
+                      href={`/selectedproducts/${id}`}
+                      className="flex items-center gap-4"
+                    >
+                      <Image
+                        src={product.src}
+                        alt={product.title}
+                        width={64}
+                        height={64}
+                        className="rounded-[12px]"
+                      />
                       <div>
                         <p className="font-bold">
                           {product.title.split(" ")[0]}
@@ -75,7 +77,7 @@ function Cart({ anchorRef }: Props) {
                           ${product.price} x {quantity}
                         </p>
                       </div>
-                    </div>
+                    </Link>
                     <div className="flex space-x-4 items-center">
                       <div className="w-[100px] h-[40px] bg-[#F1F1F1] px-[15px] flex items-center justify-between">
                         <button
@@ -113,7 +115,13 @@ function Cart({ anchorRef }: Props) {
               ${totalPrice.toFixed(2)}
             </h3>
           </div>
-          <button className="bg-[#D87D4A] mt-[24px] w-full h-[48px] text-white tracking-widest font-semibold">
+          <button
+            onClick={() => {
+              setShowCart(false);
+              router.push("/checkout");
+            }}
+            className="bg-[#D87D4A] cursor-pointer hover:opacity-65 mt-[24px] w-full h-[48px] text-white tracking-widest font-semibold"
+          >
             CHECKOUT
           </button>
         </div>

@@ -13,7 +13,9 @@ function Footer() {
   return (
     <>
       <div
-        className={`w-full bg-black h-[315px] mt-[200px] ${
+        className={`w-full bg-black h-[315px] ${
+          path !== "/checkout" ? "mt-[200px]" : "mt-0"
+        } ${
           path === "/" || path === "/login" || path === "/register"
             ? "hidden"
             : ""
