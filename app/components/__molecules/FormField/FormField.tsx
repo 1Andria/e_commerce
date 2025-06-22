@@ -1,14 +1,6 @@
 import Label from "../../__atoms/Label/Label";
 import Input from "../../__atoms/Input/Input";
-
-interface FormFieldProps {
-  label: string;
-  id: string;
-  type?: string;
-  value: string;
-  className?: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
+import { FormFieldProps } from "@/app/common/types/types";
 
 export default function FormField({
   label,
