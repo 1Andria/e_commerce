@@ -38,3 +38,12 @@ export type ProductType = {
   inTheBox: { item: string; quantity: number }[];
   createdAt: Date;
 };
+
+export interface FormFieldProps {
+  label: string;
+  id: string;
+  type?: string;
+  value: string;
+  className?: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
