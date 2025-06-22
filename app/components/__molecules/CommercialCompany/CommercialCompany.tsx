@@ -4,7 +4,7 @@ import Image from "next/image";
 function CommercialCompany() {
   return (
     <>
-      <div className="flex max-w-[1110px] mx-auto justify-between items-center mt-[200px]">
+      <div className="flex max-w-[1110px] px-[20px] mx-auto justify-between max-[915px]:flex-col max-[930px]:gap-[40px] items-center mt-[200px] max-[930px]:mt-[50px]">
         <div className="flex flex-col gap-[32px]">
           <h2 className="text-black text-[40px] font-bold tracking-widest">
             Bringing you the <br />{" "}
@@ -22,7 +22,7 @@ function CommercialCompany() {
             </p>
           </div>
         </div>
-        <div className="relative w-[540px] h-[588px]">
+        <div className="relative max-w-[540px] w-full h-[588px]">
           <Image
             src={Person}
             fill

@@ -19,7 +19,7 @@ export default function CheckoutSummary() {
   const grandTotal = total + shipping;
 
   return (
-    <div className="bg-white flex flex-col justify-between h-[612px] p-6 rounded-lg shadow-md w-[350px]">
+    <div className="bg-white flex flex-col justify-between h-[612px] max-[1100px]:w-full p-6 rounded-lg shadow-md w-[350px]">
       {cart.length > 0 ? (
         <div>
           <h2 className="text-lg font-bold tracking-widest">SUMMARY</h2>

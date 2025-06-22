@@ -7,8 +7,8 @@ const SoundWave = () => {
       style={{
         width: "720px",
         height: "720px",
-        left: "-50px", // მარცხნივ გადაადგილება
-        top: "-10px", // ზევით წამოწევა
+        left: "-50px",
+        top: "-10px",
         opacity: 0.2,
       }}
     >

@@ -32,7 +32,7 @@ function SelectedProductBody() {
     return <div className="text-center mt-20">Product not found</div>;
 
   return (
-    <div className="max-w-[1110px] mx-auto flex-col">
+    <div className="max-w-[1110px] mx-auto flex-col px-[20px]">
       <Link
         href={"/home"}
         className="opacity-[0.8] mt-[80px] inline-block hover:underline mb-[50px]"
@@ -40,7 +40,7 @@ function SelectedProductBody() {
         Go back
       </Link>
 
-      <div className="flex justify-between items-center gap-10">
+      <div className="flex justify-between items-center gap-10 max-[890px]:flex-col ">
         <div className="max-w-[540px] w-full h-[560px] relative">
           <Image
             src={Product.src}
@@ -50,21 +50,23 @@ function SelectedProductBody() {
           />
         </div>
 
-        <div className="flex flex-col space-y-6 max-w-[500px]">
+        <div className="flex flex-col space-y-6 max-w-[500px] max-[890px]:items-center">
           {Product?.isNew && (
-            <h3 className="text-[#D87D4A] tracking-widest uppercase text-[14px]">
+            <h3 className="text-[#D87D4A] tracking-widest max-[890px]:text-center uppercase text-[14px]">
               N e w <span className="ml-[10px]">P r o d u c t</span>
             </h3>
           )}
-          <h1 className="text-[40px] w-[300px] text-black font-bold leading-tight">
+          <h1 className="text-[40px] w-[300px] text-black font-bold leading-tight max-[890px]:text-center">
             {Product.title}
           </h1>
-          <p className="text-[15px] w-[400px] opacity-[0.6]">
+          <p className="text-[15px] w-[400px] opacity-[0.6] max-[890px]:text-center">
             {Product.description}
           </p>
-          <h3 className="font-bold text-[18px]">${Product.price}</h3>
+          <h3 className="font-bold text-[18px] max-[890px]:text-center">
+            ${Product.price}
+          </h3>
 
-          <div className="flex gap-[20px]">
+          <div className="flex gap-[20px] max-[890px]:justify-center">
             <AddToCartBtn dispatch={dispatch} quantity={quantity} />
 
             <button
@@ -75,22 +77,27 @@ function SelectedProductBody() {
             </button>
           </div>
 
-          <p className="mt-2 text-[14px] text-gray-500">
+          <p className="mt-2 text-[14px] text-gray-500 max-[890px]:text-center">
             Total:{" "}
             <span className="font-bold">${Product.price * quantity}</span>
           </p>
         </div>
       </div>
 
-      <div className="flex w-full mt-[60px] justify-between pr-[150px]">
+      <div
+        className="flex w-full mt-[60px] justify-between pr-[150px] max-[890px]:flex-col 
+      max-[890px]:items-center max-[890px]:pr-0 "
+      >
         <div className="flex w-[400px] flex-col">
-          <h2 className="text-2xl font-bold mb-6">FEATURES</h2>
-          <p className="text-[15px] opacity-60 whitespace-pre-line">
+          <h2 className="text-2xl font-bold mb-6 max-[890px]:text-center">
+            FEATURES
+          </h2>
+          <p className="text-[15px] opacity-60 whitespace-pre-line  max-[890px]:text-center">
             {Product.features}
           </p>
         </div>
 
-        <div className="flex flex-col">
+        <div className="flex flex-col max-[890px]:mt-[40px]">
           <h2 className="text-2xl font-bold mb-6">IN THE BOX</h2>
           <ul className="space-y-2">
             {Product.inTheBox.map((boxItem, index) => (
@@ -105,9 +112,12 @@ function SelectedProductBody() {
         </div>
       </div>
 
-      <div className="w-full mb-[160px] mt-[160px] flex gap-[30px]">
-        <div className="flex flex-col gap-[32px]">
-          <div className="w-[445px] relative h-[280px] ">
+      <div
+        className="w-full mb-[160px] max-[890px]:items-center mt-[160px] max-[890px]:mt-[70px] max-[890px]:mb-[70px] flex gap-[30px]
+       max-[890px]:flex-col"
+      >
+        <div className="flex flex-col gap-[32px] max-[890px]:w-full max-[890px]:items-center">
+          <div className=" max-w-[445px] w-full min-[890px]:w-[445px] relative h-[280px] ">
             <Image
               src={Product.additionalImages[0]}
               alt="gallery-1"
@@ -115,7 +125,7 @@ function SelectedProductBody() {
               className="object-cover rounded-lg"
             />
           </div>
-          <div className="w-[445px] relative h-[280px] ">
+          <div className="max-w-[445px] w-full relative h-[280px] ">
             <Image
               src={Product.additionalImages[1]}
               alt="gallery-2"
@@ -124,7 +134,10 @@ function SelectedProductBody() {
             />
           </div>
         </div>
-        <div className="relative w-full h-full min-h-[592px]">
+        <div
+          className="relative w-full h-full min-h-[592px] max-[890px]:max-w-[445px] 
+        max-[890px]:min-h-[280px] "
+        >
           <Image
             src={Product.additionalImages[2]}
             alt="gallery-3"
@@ -144,7 +157,7 @@ function SelectedProductBody() {
               key={item.id}
               className="flex flex-col items-center max-w-[350px] mx-auto"
             >
-              <div className="w-[350px] h-[318px] relative rounded-lg overflow-hidden mb-6">
+              <div className="w-[350px] h-[318px] relative rounded-lg  mb-6">
                 <Image
                   src={item.src}
                   alt={item.title}

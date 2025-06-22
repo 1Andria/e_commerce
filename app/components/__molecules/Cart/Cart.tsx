@@ -36,7 +36,7 @@ function Cart({ anchorRef }: Props) {
         sx: { zIndex: 50 },
       }}
     >
-      <Box className="w-[377px] h-[510px] bg-white shadow-md rounded-lg px-[33px] pt-[33px] pb-[20px] flex flex-col justify-between">
+      <Box className="w-[360px] h-[510px] bg-white shadow-md rounded-lg px-[33px] pt-[33px] pb-[20px] flex flex-col justify-between">
         <div>
           <div className="w-full flex justify-between mb-4">
             <h2 className="font-bold text-[18px] tracking-widest">
