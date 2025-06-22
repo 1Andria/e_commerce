@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import firstPagePhoto from "../../../common/images/firstPage.jpg";
 
 export default function WelcomePage() {
   const router = useRouter();
@@ -9,7 +10,7 @@ export default function WelcomePage() {
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
       <Image
-        src="/img.jpg"
+        src={firstPagePhoto}
         alt="Welcome Background"
         fill
         style={{ objectFit: "cover" }}
