@@ -1,30 +1,33 @@
 import Link from "next/link";
 import React from "react";
+import { usePathname } from "next/navigation";
 
 function Navigation() {
+  const pathname = usePathname();
+
   return (
-    <>
-      <ul className="flex gap-[30px] text-[14px] text-white">
-        <Link href={"/home"} className="hover:opacity-[0.7] cursor-pointer">
-          HOME
-        </Link>
-        <Link
-          href={"/headphones"}
-          className="hover:opacity-[0.7] cursor-pointer"
-        >
-          HEADPHONES
-        </Link>
-        <Link href={"/speakers"} className="hover:opacity-[0.7] cursor-pointer">
-          SPEAKERS
-        </Link>
-        <Link
-          href={"/earphones"}
-          className="hover:opacity-[0.7] cursor-pointer"
-        >
-          EARPHONES
-        </Link>
-      </ul>
-    </>
+    <ul className="flex gap-[30px] text-[14px] text-white max-[680px]:hidden">
+      {[
+        { href: "/home", label: "HOME" },
+        { href: "/headphones", label: "HEADPHONES" },
+        { href: "/speakers", label: "SPEAKERS" },
+        { href: "/earphones", label: "EARPHONES" },
+      ].map(({ href, label }) => (
+        <li key={href} className="relative">
+          <Link href={href}>
+            <span
+              className={`relative hover:text-[#D87D4A] hover:opacity-65 cursor-pointer after:content-[''] after:absolute after:bottom-[-4px] after:left-[50%] after:translate-x-[-50%] after:h-[2px] after:bg-[#D87D4A] after:transition-all after:duration-300 ${
+                pathname === href
+                  ? "after:w-full text-[#D87D4A]"
+                  : "after:w-0 hover:after:w-full hover:after:left-[50%]"
+              }`}
+            >
+              {label}
+            </span>
+          </Link>
+        </li>
+      ))}
+    </ul>
   );
 }
 

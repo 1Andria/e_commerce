@@ -7,7 +7,7 @@ export default function CheckoutForm() {
   );
 
   return (
-    <form className="max-w-[730px] w-full p-8 bg-white shadow-md rounded-lg space-y-8">
+    <form className="max-w-[730px] max-[1100px]:max-w-full w-full p-8 bg-white shadow-md rounded-lg space-y-8">
       <h2 className="text-2xl font-bold">CHECKOUT</h2>
 
       <div>

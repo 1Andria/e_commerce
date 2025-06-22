@@ -13,8 +13,8 @@ function Footer() {
   return (
     <>
       <div
-        className={`w-full bg-black h-[315px] ${
-          path !== "/checkout" ? "mt-[200px]" : "mt-0"
+        className={`w-full bg-black px-[20px] h-[315px] max-[680px]:h-auto ${
+          path !== "/checkout" ? "mt-[200px] max-[890px]:mt-[70px]" : "mt-0"
         } ${
           path === "/" || path === "/login" || path === "/register"
             ? "hidden"
@@ -25,11 +25,13 @@ function Footer() {
           <div className="w-[101px] h-[5px] bg-[#D87D4A] absolute top-0 left-0"></div>
           <div className="w-full flex justify-between  pt-[70px] ">
             <Image src={CompanyName} alt="audiophile" width={143} height={25} />
-            <Navigation />
+            <div className="max-[950px]:hidden">
+              <Navigation />
+            </div>
           </div>
-          <div className="flex justify-between mt-[30px] items-center">
+          <div className="flex justify-between mt-[30px] max-[680px]:flex-col items-center">
             <div className="flex flex-col h-full gap-[50px] ">
-              <div className="w-[500px] text-white opacity-[0.6]">
+              <div className="max-w-[500px] w-full text-white opacity-[0.6]">
                 <p>
                   Audiophile is an all in one stop to fulfill your audio needs.
                   We&apos;re a small team of music lovers and sound specialists
@@ -42,7 +44,7 @@ function Footer() {
                 Copyright 2021. All Rights Reserved
               </p>
             </div>
-            <div className="flex gap-[16px]">
+            <div className="flex gap-[16px] max-[680px]:mt-[40px]">
               <Image src={Fb_icon} alt="facebook" />
               <Image src={Twit_icon} alt="Twitter" />
               <Image src={Insta_icon} alt="Instagram" />
