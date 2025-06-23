@@ -8,7 +8,7 @@ function BurgerMenu() {
   return (
     <>
       <div
-        className="flex flex-col gap-[3px] min-[680px]:hidden cursor-pointer  relative"
+        className="flex flex-col gap-[3px] min-[740px]:hidden cursor-pointer  relative"
         onClick={() => setIsOpen(true)}
       >
         <div className="w-[16px] h-[3px] bg-white"></div>
@@ -61,6 +61,13 @@ function BurgerMenu() {
               className="hover:text-[#D87D4A]"
             >
               EARPHONES
+            </Link>
+            <Link
+              href="/adminpanel"
+              onClick={() => setIsOpen(false)}
+              className="hover:text-[#D87D4A]"
+            >
+              ADMINPANEL
             </Link>
           </ul>
         </div>

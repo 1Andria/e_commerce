@@ -6,12 +6,13 @@ function Navigation() {
   const pathname = usePathname();
 
   return (
-    <ul className="flex gap-[30px] text-[14px] text-white max-[680px]:hidden">
+    <ul className="flex gap-[30px] text-[14px] text-white max-[740px]:hidden">
       {[
         { href: "/home", label: "HOME" },
         { href: "/headphones", label: "HEADPHONES" },
         { href: "/speakers", label: "SPEAKERS" },
         { href: "/earphones", label: "EARPHONES" },
+        { href: "/adminpanel", label: "ADMINPANEL" },
       ].map(({ href, label }) => (
         <li key={href} className="relative">
           <Link href={href}>
