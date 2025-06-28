@@ -2,6 +2,15 @@
 
 import { StaticImageData } from "next/image";
 
+import { InputHTMLAttributes } from "react";
+
+export type FormFieldProps = {
+  label: string;
+  id: string;
+  type?: string;
+  className?: string;
+} & InputHTMLAttributes<HTMLInputElement>;
+
 export type CartItem = {
   id: string;
   quantity: number;
@@ -38,12 +47,3 @@ export type ProductType = {
   inTheBox: { item: string; quantity: number }[];
   createdAt: Date;
 };
-
-export interface FormFieldProps {
-  label: string;
-  id: string;
-  type?: string;
-  value: string;
-  className?: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
