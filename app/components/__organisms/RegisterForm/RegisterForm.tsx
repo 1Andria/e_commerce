@@ -1,38 +1,56 @@
 "use client";
 
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useAuthStore } from "../../../common/store/store";
 import FormField from "../../__molecules/FormField/FormField";
 import Button from "../../__atoms/btn/btn";
-import { useRouter } from "next/navigation";
 import BirthDatePicker from "../../__molecules/BirthDatePicker/BirthDatePicker";
+import { useState } from "react";
+
+const schema = yup.object().shape({
+  firstName: yup.string().required("First name is required"),
+  lastName: yup.string().required("Last name is required"),
+  email: yup.string().email("Invalid email").required("Email is required"),
+  password: yup
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
+});
+
+type FormValues = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+};
 
 export default function RegisterPage() {
-  const register = useAuthStore((state) => state.register);
+  const registerUser = useAuthStore((state) => state.register);
   const router = useRouter();
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [birthYear, setBirthYear] = useState("");
   const [birthMonth, setBirthMonth] = useState("");
   const [birthDay, setBirthDay] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>({
+    resolver: yupResolver(schema),
+  });
 
-    if (!firstName || !lastName || !email || !password) {
-      alert("Please fill in all required fields");
-      return;
-    }
-
+  const onSubmit = (data: FormValues) => {
     if (birthYear || birthMonth || birthDay) {
       if (!(birthYear && birthMonth && birthDay)) {
         alert("Please select full birth date or leave all empty");
         return;
       }
+
       const birthDate = new Date(+birthYear, +birthMonth - 1, +birthDay);
       if (birthDate > new Date()) {
         alert("Birth date cannot be in the future");
@@ -40,7 +58,7 @@ export default function RegisterPage() {
       }
     }
 
-    register(email, password);
+    registerUser(data.email, data.password);
     router.push("/login");
   };
 
@@ -67,7 +85,10 @@ export default function RegisterPage() {
       </div>
 
       <div className="flex flex-col justify-center items-center bg-[#FDF8F2] px-8 py-10 md:px-12 md:py-16">
-        <form onSubmit={handleSubmit} className="w-full max-w-md space-y-6">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="w-full max-w-md space-y-6"
+        >
           <h2 className="text-3xl md:text-4xl font-extrabold text-[#4B3429] text-center">
             Register
           </h2>
@@ -76,24 +97,26 @@ export default function RegisterPage() {
             label="First Name"
             id="firstName"
             type="text"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            className="w-full bg-white border border-[#D7C3B3] rounded-xl min-h-[50px] px-4 md:px-6 text-lg md:text-xl text-[#4B3429] placeholder-[#C9B59F]
-                       focus:outline-none focus:ring-4 focus:ring-[#D8A47F] transition flex items-center"
+            {...register("firstName")}
+            className="..."
           />
+          {errors.firstName && (
+            <p className="text-red-500 text-sm">{errors.firstName.message}</p>
+          )}
 
           <FormField
             label="Last Name"
             id="lastName"
             type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            className="w-full bg-white border border-[#D7C3B3] rounded-xl min-h-[50px] px-4 md:px-6 text-lg md:text-xl text-[#4B3429] placeholder-[#C9B59F]
-                       focus:outline-none focus:ring-4 focus:ring-[#D8A47F] transition flex items-center"
+            {...register("lastName")}
+            className="..."
           />
+          {errors.lastName && (
+            <p className="text-red-500 text-sm">{errors.lastName.message}</p>
+          )}
 
           <div>
-            <label className="block mb-1 md:mb-2 text-[#4B3429] font-semibold text-md md:text-lg">
+            <label className="block mb-1 text-[#4B3429] font-semibold">
               Birth Date (optional)
             </label>
             <BirthDatePicker
@@ -110,21 +133,23 @@ export default function RegisterPage() {
             label="Email"
             id="email"
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full bg-white border border-[#D7C3B3] rounded-xl min-h-[50px] px-4 md:px-6 text-lg md:text-xl text-[#4B3429] placeholder-[#C9B59F] 
-                       focus:outline-none focus:ring-4 focus:ring-[#D8A47F] transition flex items-center"
+            {...register("email")}
+            className="..."
           />
+          {errors.email && (
+            <p className="text-red-500 text-sm">{errors.email.message}</p>
+          )}
 
           <FormField
             label="Password"
             id="password"
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full bg-white border border-[#D7C3B3] rounded-xl min-h-[50px] px-4 md:px-6 text-lg md:text-xl text-[#4B3429] placeholder-[#C9B59F] 
-                       focus:outline-none focus:ring-4 focus:ring-[#D8A47F] transition flex items-center"
+            {...register("password")}
+            className="..."
           />
+          {errors.password && (
+            <p className="text-red-500 text-sm">{errors.password.message}</p>
+          )}
 
           <Button
             type="submit"

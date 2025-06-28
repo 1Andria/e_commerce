@@ -1,28 +1,49 @@
 "use client";
 
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
 import Image from "next/image";
 import { useAuthStore } from "../../../common/store/store";
 import FormField from "../../__molecules/FormField/FormField";
 import Button from "../../__atoms/btn/btn";
 import { useRouter } from "next/navigation";
 import { FaGoogle, FaFacebook } from "react-icons/fa";
+import { useState } from "react";
+
+const schema = yup.object().shape({
+  email: yup.string().email("Invalid email").required("Email is required"),
+  password: yup
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
+});
+
+type FormData = {
+  email: string;
+  password: string;
+};
 
 export default function LoginPage() {
   const login = useAuthStore((state) => state.login);
   const router = useRouter();
+  const [serverError, setServerError] = useState("");
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: yupResolver(schema),
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const success = login(email, password);
+  const onSubmit = (data: FormData) => {
+    const success = login(data.email, data.password);
     if (success) {
       router.push("/home");
     } else {
-      setError("Email or password is incorrect");
+      setServerError("Email or password is incorrect");
     }
   };
 
@@ -48,31 +69,44 @@ export default function LoginPage() {
       </div>
 
       <div className="flex flex-col justify-center items-center bg-[#FDF8F2] px-12 py-16">
-        <form onSubmit={handleSubmit} className="w-full max-w-lg space-y-8">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="w-full max-w-lg space-y-8"
+        >
           <h2 className="text-4xl font-extrabold text-[#4B3429] text-center">
             Sign In
           </h2>
 
           <div className="space-y-6">
-            <FormField
-              label="Email"
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-white border border-[#D7C3B3] rounded-xl py-4 px-6 text-lg text-[#4B3429] placeholder-[#C9B59F] 
-                         focus:outline-none focus:ring-4 focus:ring-[#D8A47F] transition"
-            />
+            <div>
+              <FormField
+                label="Email"
+                id="email"
+                type="email"
+                {...register("email")}
+                className="w-full bg-white border border-[#D7C3B3] rounded-xl py-4 px-6 text-lg text-[#4B3429] placeholder-[#C9B59F] focus:outline-none focus:ring-4 focus:ring-[#D8A47F] transition"
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
 
-            <FormField
-              label="Password"
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-white border border-[#D7C3B3] rounded-xl min-h-[64px] px-6 text-xl text-[#4B3429] placeholder-[#C9B59F] 
-             flex items-center focus:outline-none focus:ring-4 focus:ring-[#D8A47F] transition"
-            />
+            <div>
+              <FormField
+                label="Password"
+                id="password"
+                type="password"
+                {...register("password")}
+                className="w-full bg-white border border-[#D7C3B3] rounded-xl min-h-[64px] px-6 text-xl text-[#4B3429] placeholder-[#C9B59F] focus:outline-none focus:ring-4 focus:ring-[#D8A47F] transition"
+              />
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
 
             <div className="flex justify-between text-sm text-[#8B6E58]">
               <label className="flex items-center gap-2">
@@ -84,16 +118,15 @@ export default function LoginPage() {
               </a>
             </div>
 
-            {error && (
+            {serverError && (
               <p className="text-red-600 text-center text-sm font-semibold">
-                {error}
+                {serverError}
               </p>
             )}
 
             <Button
               type="submit"
-              className="w-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-[#B78552] to-[#E2B16B] 
-                         hover:from-[#A76A3E] hover:to-[#D5A54F] shadow-lg transition"
+              className="w-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-[#B78552] to-[#E2B16B] hover:from-[#A76A3E] hover:to-[#D5A54F] shadow-lg transition"
             >
               Sign In
             </Button>
