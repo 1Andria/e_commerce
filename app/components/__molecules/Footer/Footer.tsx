@@ -2,7 +2,7 @@
 import React from "react";
 import CompanyName from "../../../common/images/audiophile.png";
 import Image from "next/image";
-import Navigation from "../../__atoms/Navigation/Navigation";
+// import Navigation from "../../__atoms/Navigation/Navigation";
 import Fb_icon from "../../../common/images/fb_icon.png";
 import Twit_icon from "../../../common/images/twit_icon.png";
 import Insta_icon from "../../../common/images/insta_icon.png";
@@ -25,9 +25,7 @@ function Footer() {
           <div className="w-[101px] h-[5px] bg-[#D87D4A] absolute top-0 left-0"></div>
           <div className="w-full flex justify-between  pt-[70px] ">
             <Image src={CompanyName} alt="audiophile" width={143} height={25} />
-            <div className="max-[950px]:hidden">
-              <Navigation />
-            </div>
+            <div className="max-[950px]:hidden">{/* <Navigation /> */}</div>
           </div>
           <div className="flex justify-between mt-[30px] max-[680px]:flex-col items-center">
             <div className="flex flex-col h-full gap-[50px] ">

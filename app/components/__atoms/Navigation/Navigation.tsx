@@ -2,18 +2,24 @@ import Link from "next/link";
 import React from "react";
 import { usePathname } from "next/navigation";
 
-function Navigation() {
+export type IsAdminProp = {
+  isAdmin: boolean;
+};
+
+function Navigation({ isAdmin }: IsAdminProp) {
   const pathname = usePathname();
 
   return (
     <ul className="flex gap-[30px] text-[14px] text-white max-[740px]:hidden">
-      {[
-        { href: "/home", label: "HOME" },
-        { href: "/headphones", label: "HEADPHONES" },
-        { href: "/speakers", label: "SPEAKERS" },
-        { href: "/earphones", label: "EARPHONES" },
-        { href: "/adminpanel", label: "ADMINPANEL" },
-      ].map(({ href, label }) => (
+      {(
+        [
+          { href: "/home", label: "HOME" },
+          { href: "/headphones", label: "HEADPHONES" },
+          { href: "/speakers", label: "SPEAKERS" },
+          { href: "/earphones", label: "EARPHONES" },
+          isAdmin && { href: "/adminpanel", label: "ADMINPANEL" },
+        ].filter(Boolean) as { href: string; label: string }[]
+      ).map(({ href, label }) => (
         <li key={href} className="relative">
           <Link href={href}>
             <span

@@ -1,17 +1,49 @@
 "use client";
 
-import { useCartStore } from "@/app/common/store/store";
-import { temporaryData } from "@/app/common/Datas/TemporaryData";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import React from "react";
+import { axiosInstance } from "@/app/common/lib/axios-instance";
+import { getCookie } from "cookies-next";
+import { Product, SelectedProduct } from "@/app/common/types/types";
 
 export default function CheckoutSummary() {
-  const cart = useCartStore((state) => state.cart);
+  const [selectedProducts, setSelectedProducts] = useState<SelectedProduct[]>(
+    []
+  );
+  const [products, setProducts] = useState<Product[]>([]);
 
-  const total = cart.reduce((acc, { id, quantity }) => {
-    const product = temporaryData.find((p) => p.id === id);
+  useEffect(() => {
+    const fetchData = async () => {
+      const token = getCookie("token");
+      if (!token) return;
+
+      try {
+        const userResp = await axiosInstance.get("/auth/current-user", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const selected = userResp.data.selectedProducts || [];
+        setSelectedProducts(selected);
+
+        const productPromises = selected.map((item: SelectedProduct) =>
+          axiosInstance.get(`/products/${item.product}`)
+        );
+        const productResponses = await Promise.all(productPromises);
+        const productData = productResponses.map((res) => res.data);
+
+        setProducts(productData);
+      } catch (err) {
+        console.error("Failed to fetch summary data:", err);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const total = selectedProducts.reduce((acc, item) => {
+    const product = products.find((p) => p._id === item.product);
     if (!product) return acc;
-    return acc + product.price * quantity;
+    return acc + product.price * item.quantity;
   }, 0);
 
   const shipping = 50;
@@ -20,13 +52,14 @@ export default function CheckoutSummary() {
 
   return (
     <div className="bg-white flex flex-col justify-between h-[612px] max-[1100px]:w-full p-6 rounded-lg shadow-md w-[350px]">
-      {cart.length > 0 ? (
+      {selectedProducts.length > 0 ? (
         <div>
           <h2 className="text-lg font-bold tracking-widest">SUMMARY</h2>
-          <div className="flex flex-col gap-[10px]  max-h-[250px] mt-[30px] overflow-y-auto">
-            {cart.map(({ id, quantity }) => {
-              const product = temporaryData.find((item) => item.id === id);
+          <div className="flex flex-col gap-[10px] max-h-[250px] mt-[30px] overflow-y-auto">
+            {selectedProducts.map(({ product: id, quantity }) => {
+              const product = products.find((p) => p._id === id);
               if (!product) return null;
+
               return (
                 <div key={id} className="flex items-center justify-between">
                   <div className="flex items-center gap-4">

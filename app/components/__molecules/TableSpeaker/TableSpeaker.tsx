@@ -16,7 +16,9 @@ function TableSpeaker() {
         <h2 className="text-[28px] font-semibold tracking-widest">
           ZX7 SPEAKER
         </h2>
-        <SeeProductBtnTransparent goTo={"/selectedproducts/zx7-speaker"} />
+        <SeeProductBtnTransparent
+          goTo={"/selectedproducts/6864532b0632259929e0dd3a"}
+        />
       </div>
     </div>
   );

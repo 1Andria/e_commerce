@@ -1,9 +1,9 @@
-import WelcomePage from "./components/__organisms/WelcomePage/WelcomePage";
+import HomeBody from "./components/__organisms/HomeBody/HomeBody";
 
 export default function Home() {
   return (
     <>
-      <WelcomePage />
+      <HomeBody />
     </>
   );
 }

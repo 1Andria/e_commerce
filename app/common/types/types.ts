@@ -35,8 +35,7 @@ export type NavTypes = {
 };
 
 export type ProductType = {
-  id: string;
-  isNew: boolean;
+  _id: string;
   category: string;
   src: StaticImageData;
   title: string;
@@ -46,4 +45,16 @@ export type ProductType = {
   price: number;
   inTheBox: { item: string; quantity: number }[];
   createdAt: Date;
+};
+
+export type SelectedProduct = {
+  product: string;
+  quantity: number;
+};
+
+export type Product = {
+  _id: string;
+  title: string;
+  price: number;
+  src: string;
 };

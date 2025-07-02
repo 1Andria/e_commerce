@@ -1,29 +1,138 @@
 "use client";
-import { useCartShow, useCartStore } from "@/app/common/store/store";
+
 import { Popover, Box } from "@mui/material";
-import React from "react";
-import { temporaryData } from "@/app/common/Datas/TemporaryData";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
+import { axiosInstance } from "@/app/common/lib/axios-instance";
+import { useCartShow } from "@/app/common/store/store";
+
 type Props = {
   anchorRef: React.RefObject<HTMLImageElement | null>;
+};
+
+type SelectedProduct = {
+  product: string;
+  quantity: number;
+};
+
+type Product = {
+  _id: string;
+  title: string;
+  price: number;
+  src: string;
 };
 
 function Cart({ anchorRef }: Props) {
   const showCart = useCartShow((state) => state.showCart);
   const setShowCart = useCartShow((state) => state.setShowCart);
-  const cartStore = useCartStore((state) => state.cart);
-  const removeAll = useCartStore((state) => state.removeAll);
-  const incrementQuantity = useCartStore((state) => state.incrementQuantity);
-  const decrementQuantity = useCartStore((state) => state.decrementQuantity);
-  const cartItems = useCartStore((state) => state.cart);
+
+  const [selectedProducts, setSelectedProducts] = useState<SelectedProduct[]>(
+    []
+  );
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-  const totalPrice = cartItems.reduce((acc, { id, quantity }) => {
-    const product = temporaryData.find((item) => item.id === id);
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      const token = getCookie("token");
+      if (!token) {
+        setSelectedProducts([]);
+        setProducts([]);
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const userResp = await axiosInstance.get("/auth/current-user", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const user = userResp.data;
+        const selected = user.selectedProducts || [];
+
+        setSelectedProducts(selected);
+
+        const productPromises = selected.map((item: SelectedProduct) =>
+          axiosInstance.get(`/products/${item.product}`)
+        );
+
+        const productResponses = await Promise.all(productPromises);
+        const productData: Product[] = productResponses.map((res) => res.data);
+        setProducts(productData);
+      } catch (err) {
+        console.error("Failed to fetch cart:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (showCart) fetchCart();
+  }, [showCart]);
+
+  const totalPrice = selectedProducts.reduce((acc, item) => {
+    const product = products.find((p) => p._id === item.product);
     if (!product) return acc;
-    return acc + product.price * quantity;
+    return acc + product.price * item.quantity;
   }, 0);
+
+  const handleClearCart = async () => {
+    const token = getCookie("token");
+    if (!token) return;
+
+    try {
+      await axiosInstance.patch(
+        "/auth/clear-cart",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setSelectedProducts([]);
+      setProducts([]);
+    } catch (err) {
+      console.error("Failed to clear cart:", err);
+      alert("Failed to clear cart");
+    }
+  };
+
+  const handleQuantityChange = async (
+    productId: string,
+    type: "increase" | "decrease"
+  ) => {
+    const token = getCookie("token");
+    if (!token) return;
+
+    try {
+      const endpoint =
+        type === "increase" ? "/auth/cart/increase" : "/auth/cart/decrease";
+
+      await axiosInstance.patch(
+        endpoint,
+        { productId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const updatedUser = await axiosInstance.get("/auth/current-user", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setSelectedProducts(updatedUser.data.selectedProducts);
+    } catch (err) {
+      console.error("Failed to update quantity:", err);
+    }
+  };
 
   return (
     <Popover
@@ -36,24 +145,26 @@ function Cart({ anchorRef }: Props) {
         sx: { zIndex: 50 },
       }}
     >
-      <Box className="w-[360px] h-[510px] bg-white shadow-md rounded-lg px-[33px] pt-[33px] pb-[20px] flex flex-col justify-between">
+      <Box className="w-[360px] h-[510px] bg-white shadow-md rounded-lg px-[33px] pt-[33px] pb-[20px] flex flex-col justify-between ">
         <div>
           <div className="w-full flex justify-between mb-4">
             <h2 className="font-bold text-[18px] tracking-widest">
-              CART ({cartStore.length})
+              CART ({selectedProducts.length})
             </h2>
             <h2
-              onClick={removeAll}
               className="underline cursor-pointer text-black opacity-65"
+              onClick={handleClearCart}
             >
               Remove all
             </h2>
           </div>
 
-          {cartStore.length > 0 ? (
+          {isLoading ? (
+            <div className="w-full text-center mt-10">Loading cart...</div>
+          ) : selectedProducts.length > 0 ? (
             <div className="max-h-[300px] overflow-y-auto pr-2">
-              {cartItems.map(({ id, quantity }) => {
-                const product = temporaryData.find((item) => item.id === id);
+              {selectedProducts.map(({ product: id, quantity }) => {
+                const product = products.find((p) => p._id === id);
                 if (!product) return null;
 
                 return (
@@ -78,22 +189,25 @@ function Cart({ anchorRef }: Props) {
                         </p>
                       </div>
                     </Link>
-                    <div className="flex space-x-4 items-center">
-                      <div className="w-[100px] h-[40px] bg-[#F1F1F1] px-[15px] flex items-center justify-between">
-                        <button
-                          onClick={() => decrementQuantity(id)}
-                          className="text-black text-lg font-bold cursor-pointer"
-                        >
-                          –
-                        </button>
-                        <span className="font-medium">{quantity}</span>
-                        <button
-                          onClick={() => incrementQuantity(id)}
-                          className="text-black text-lg font-bold cursor-pointer"
-                        >
-                          +
-                        </button>
-                      </div>
+
+                    <div className="w-[100px] h-[40px] bg-[#F1F1F1] px-[15px] flex items-center justify-between">
+                      <button
+                        onClick={() =>
+                          handleQuantityChange(product._id, "decrease")
+                        }
+                        className="font-bold cursor-pointer"
+                      >
+                        –
+                      </button>
+                      <span>{quantity}</span>
+                      <button
+                        onClick={() =>
+                          handleQuantityChange(product._id, "increase")
+                        }
+                        className="font-bold cursor-pointer"
+                      >
+                        +
+                      </button>
                     </div>
                   </div>
                 );
@@ -107,7 +221,7 @@ function Cart({ anchorRef }: Props) {
         </div>
 
         <div>
-          <div className="w-full flex justify-between   mt-[20px]">
+          <div className="w-full flex justify-between mt-[20px]">
             <span className="text-[15px] text-black opacity-65 font-semibold tracking-widest">
               TOTAL
             </span>
@@ -118,7 +232,13 @@ function Cart({ anchorRef }: Props) {
           <button
             onClick={() => {
               setShowCart(false);
-              router.push("/checkout");
+              const token = getCookie("token");
+
+              if (!token) {
+                router.push("/login");
+              } else {
+                router.push("/checkout");
+              }
             }}
             className="bg-[#D87D4A] cursor-pointer hover:opacity-65 mt-[24px] w-full h-[48px] text-white tracking-widest font-semibold"
           >

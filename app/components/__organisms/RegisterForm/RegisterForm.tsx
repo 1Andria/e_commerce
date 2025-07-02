@@ -5,11 +5,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "../../../common/store/store";
 import FormField from "../../__molecules/FormField/FormField";
 import Button from "../../__atoms/btn/btn";
 import BirthDatePicker from "../../__molecules/BirthDatePicker/BirthDatePicker";
 import { useState } from "react";
+import { axiosInstance } from "@/app/common/lib/axios-instance";
 
 const schema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
@@ -29,7 +29,6 @@ type FormValues = {
 };
 
 export default function RegisterPage() {
-  const registerUser = useAuthStore((state) => state.register);
   const router = useRouter();
 
   const [birthYear, setBirthYear] = useState("");
@@ -44,7 +43,7 @@ export default function RegisterPage() {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
     if (birthYear || birthMonth || birthDay) {
       if (!(birthYear && birthMonth && birthDay)) {
         alert("Please select full birth date or leave all empty");
@@ -58,8 +57,18 @@ export default function RegisterPage() {
       }
     }
 
-    registerUser(data.email, data.password);
-    router.push("/login");
+    try {
+      const resp = await axiosInstance.post("/auth/sign-up", {
+        email: data.email,
+        password: data.password,
+      });
+      if (resp.status === 201) {
+        router.push("/login");
+        return;
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (

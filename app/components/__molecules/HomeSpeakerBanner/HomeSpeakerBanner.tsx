@@ -9,7 +9,7 @@ function HomeSpeakerBanner() {
   const router = useRouter();
 
   function seeProduct() {
-    router.push("/selectedproducts/zx7-speaker1");
+    router.push("/selectedproducts/6864532b0632259929e0dd3a");
   }
   return (
     <div className="relative max-w-[1110px] flex mx-auto h-[560px] mb-[48px] rounded-[10px] bg-[#D87D4A] overflow-hidden pr-[100px] max-[930px]:flex-col max-[930px]:pr-0 max-[930px]:h-auto max-[930px]:items-center max-[930px]:pb-[40px] max-[650px]:mx-[20px]">
