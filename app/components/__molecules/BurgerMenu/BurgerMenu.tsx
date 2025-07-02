@@ -1,8 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import { IsAdminProp } from "../../__atoms/Navigation/Navigation";
 
-function BurgerMenu() {
+function BurgerMenu({ isAdmin }: IsAdminProp) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -62,13 +63,15 @@ function BurgerMenu() {
             >
               EARPHONES
             </Link>
-            <Link
-              href="/adminpanel"
-              onClick={() => setIsOpen(false)}
-              className="hover:text-[#D87D4A]"
-            >
-              ADMINPANEL
-            </Link>
+            {isAdmin && (
+              <Link
+                href="/adminpanel"
+                onClick={() => setIsOpen(false)}
+                className="hover:text-[#D87D4A]"
+              >
+                ADMINPANEL
+              </Link>
+            )}
           </ul>
         </div>
       </div>

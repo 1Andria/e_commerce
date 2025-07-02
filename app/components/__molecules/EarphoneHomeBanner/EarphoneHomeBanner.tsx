@@ -19,7 +19,9 @@ function EarphoneHomeBanner() {
           <h2 className="text-black text-[28px] font-semibold tracking-wider">
             YX1 EARPHONES
           </h2>
-          <SeeProductBtnTransparent goTo={`/selectedproducts/yx1-earphones2`} />
+          <SeeProductBtnTransparent
+            goTo={`/selectedproducts/686452000632259929e0dd22`}
+          />
         </div>
       </div>
     </>

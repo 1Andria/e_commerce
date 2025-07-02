@@ -81,6 +81,16 @@ export const useCartStore = create<CartStore>((set) => ({
     })),
 }));
 
+type CartState = {
+  cartCount: number;
+  setCartCount: (count: number) => void;
+};
+
+export const useCartCount = create<CartState>((set) => ({
+  cartCount: 0,
+  setCartCount: (count) => set({ cartCount: count }),
+}));
+
 export const useCartShow = create<ShowCartType>((set) => ({
   showCart: false,
   setShowCart: (value) => set(() => ({ showCart: value })),

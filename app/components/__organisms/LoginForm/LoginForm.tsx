@@ -5,12 +5,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
 import Image from "next/image";
-import { useAuthStore } from "../../../common/store/store";
 import FormField from "../../__molecules/FormField/FormField";
 import Button from "../../__atoms/btn/btn";
 import { useRouter } from "next/navigation";
 import { FaGoogle, FaFacebook } from "react-icons/fa";
-import { useState } from "react";
+import { axiosInstance } from "@/app/common/lib/axios-instance";
+import { setCookie } from "cookies-next";
 
 const schema = yup.object().shape({
   email: yup.string().email("Invalid email").required("Email is required"),
@@ -26,9 +26,7 @@ type FormData = {
 };
 
 export default function LoginPage() {
-  const login = useAuthStore((state) => state.login);
   const router = useRouter();
-  const [serverError, setServerError] = useState("");
 
   const {
     register,
@@ -38,12 +36,19 @@ export default function LoginPage() {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: FormData) => {
-    const success = login(data.email, data.password);
-    if (success) {
-      router.push("/home");
-    } else {
-      setServerError("Email or password is incorrect");
+  const onSubmit = async (data: FormData) => {
+    try {
+      const resp = await axiosInstance.post("/auth/sign-in", {
+        email: data.email,
+        password: data.password,
+      });
+      if (resp.status === 201) {
+        setCookie("token", resp.data.token, { maxAge: 60 * 60 });
+        router.push("/");
+        return;
+      }
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -117,12 +122,6 @@ export default function LoginPage() {
                 Forgot password?
               </a>
             </div>
-
-            {serverError && (
-              <p className="text-red-600 text-center text-sm font-semibold">
-                {serverError}
-              </p>
-            )}
 
             <Button
               type="submit"

@@ -9,7 +9,7 @@ function HomeBanner() {
   const router = useRouter();
 
   function seeProduct() {
-    router.push("/selectedproducts/xx99-mk2");
+    router.push("/selectedproducts/686452920632259929e0dd2e");
   }
 
   return (

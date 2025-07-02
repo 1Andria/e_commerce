@@ -1,9 +1,16 @@
 "use client";
-import React, { useRef, useState } from "react";
+
+import React, { useEffect, useRef, useState } from "react";
 import Header from "../../__molecules/Header/Header";
 import Image from "next/image";
+import { getCookie, deleteCookie } from "cookies-next";
+import { axiosInstance } from "@/app/common/lib/axios-instance";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function AdminPanel() {
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     category: "",
     title: "",
@@ -23,8 +30,38 @@ export default function AdminPanel() {
     additionalImage3: useRef<HTMLInputElement>(null),
   };
 
+  useEffect(() => {
+    const checkAdmin = async () => {
+      const token = getCookie("token");
+      if (!token) {
+        router.push("/");
+        return;
+      }
+
+      try {
+        const res = await axiosInstance.get("/auth/current-user", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const user = res.data;
+        if (user.role !== "admin") {
+          router.push("/");
+        }
+      } catch (err) {
+        console.log(err);
+
+        deleteCookie("token");
+        router.push("/");
+      }
+    };
+
+    checkAdmin();
+  }, []);
+
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -41,13 +78,68 @@ export default function AdminPanel() {
     fileRefs[field]?.current?.click();
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log(formData);
-  };
-
   const getImagePreview = (file: File | null): string | undefined =>
     file ? URL.createObjectURL(file) : undefined;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const token = getCookie("token");
+    if (!token) return;
+
+    const boxItems = formData.inTheBox
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean)
+      .map((item) => {
+        const match = item.match(/^(\d+)x\s+(.*)$/i);
+        if (!match) return null;
+        return {
+          quantity: parseInt(match[1]),
+          item: match[2],
+        };
+      })
+      .filter(Boolean);
+
+    const form = new FormData();
+    form.append("category", formData.category);
+    form.append("title", formData.title);
+    form.append("price", formData.price);
+    form.append("description", formData.description);
+    form.append("features", formData.features);
+    form.append("inTheBox", JSON.stringify(boxItems));
+    form.append("images", formData.src as File);
+    form.append("images", formData.additionalImage1 as File);
+    form.append("images", formData.additionalImage2 as File);
+    form.append("images", formData.additionalImage3 as File);
+
+    try {
+      await axiosInstance.post("/products", form, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      setFormData({
+        category: "",
+        title: "",
+        price: "",
+        description: "",
+        features: "",
+        inTheBox: "",
+        src: null,
+        additionalImage1: null,
+        additionalImage2: null,
+        additionalImage3: null,
+      });
+      toast.success("created successfully");
+    } catch (err) {
+      toast.error("failed");
+
+      console.log(err);
+    }
+  };
+  console.log("FORM DATA STATE:", formData);
 
   return (
     <>
@@ -55,7 +147,7 @@ export default function AdminPanel() {
         <Header />
       </div>
 
-      <div className="max-w-[960px] mb-[-100px] px-[20px] w-full mx-auto p-[24px] mt-[60px]  shadow-xl rounded-2xl">
+      <div className="max-w-[960px] mb-[-100px] px-[20px] w-full mx-auto p-[24px] mt-[60px] shadow-xl rounded-2xl">
         <h2 className="text-[32px] font-bold text-center mb-[40px]">
           Add New Product
         </h2>
@@ -65,12 +157,19 @@ export default function AdminPanel() {
               <label className="block text-sm font-semibold mb-[6px]">
                 Category
               </label>
-              <input
+              <select
                 name="category"
                 onChange={handleChange}
-                className="w-full border border-gray-300 px-[16px] py-[12px] rounded-lg focus:ring-2 focus:ring-[#D87D4A]"
-                placeholder="headphones"
-              />
+                value={formData.category}
+                className="w-full border border-gray-300 px-[16px] py-[12px] rounded-lg focus:ring-2 focus:ring-[#D87D4A] bg-white"
+              >
+                <option value="" disabled>
+                  Select category
+                </option>
+                <option value="headphones">Headphones</option>
+                <option value="earphones">Earphones</option>
+                <option value="speakers">Speakers</option>
+              </select>
             </div>
             <div>
               <label className="block text-sm font-semibold mb-[6px]">
@@ -80,6 +179,7 @@ export default function AdminPanel() {
                 name="price"
                 type="number"
                 onChange={handleChange}
+                value={formData.price}
                 className="w-full border border-gray-300 px-[16px] py-[12px] rounded-lg focus:ring-2 focus:ring-[#D87D4A]"
                 placeholder="1199"
               />
@@ -91,6 +191,7 @@ export default function AdminPanel() {
               <input
                 name="title"
                 onChange={handleChange}
+                value={formData.title}
                 className="w-full border border-gray-300 px-[16px] py-[12px] rounded-lg focus:ring-2 focus:ring-[#D87D4A]"
                 placeholder="ZX7 Bluetooth Speaker"
               />
@@ -106,6 +207,7 @@ export default function AdminPanel() {
                 name="description"
                 rows={3}
                 onChange={handleChange}
+                value={formData.description}
                 className="w-full border border-gray-300 px-[16px] py-[12px] rounded-lg focus:ring-2 focus:ring-[#D87D4A]"
                 placeholder="Short product description..."
               />
@@ -118,6 +220,7 @@ export default function AdminPanel() {
                 name="features"
                 rows={4}
                 onChange={handleChange}
+                value={formData.features}
                 className="w-full border border-gray-300 px-[16px] py-[12px] rounded-lg focus:ring-2 focus:ring-[#D87D4A]"
                 placeholder="Detailed features or specs..."
               />
@@ -167,12 +270,11 @@ export default function AdminPanel() {
                         triggerUpload(field as keyof typeof fileRefs)
                       }
                       className={`w-full h-[180px] flex items-center justify-center rounded-xl cursor-pointer transition overflow-hidden
-                    ${
-                      preview
-                        ? ""
-                        : "border-2 border-dashed border-[#D87D4A] hover:bg-[#fff5f0] text-[#D87D4A] flex-col"
-                    }
-                  `}
+                      ${
+                        preview
+                          ? ""
+                          : "border-2 border-dashed border-[#D87D4A] hover:bg-[#fff5f0] text-[#D87D4A] flex-col"
+                      }`}
                     >
                       {preview ? (
                         <Image
@@ -212,6 +314,7 @@ export default function AdminPanel() {
             <input
               name="inTheBox"
               onChange={handleChange}
+              value={formData.inTheBox}
               className="w-full border border-gray-300 px-[16px] py-[12px] rounded-lg focus:ring-2 focus:ring-[#D87D4A]"
               placeholder="Speaker, Cable, Manual"
             />
