@@ -1,9 +1,5 @@
-import HomeBody from "./components/__organisms/HomeBody/HomeBody";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return (
-    <>
-      <HomeBody />
-    </>
-  );
+  redirect("/home");
 }
